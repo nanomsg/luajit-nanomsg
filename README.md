@@ -9,7 +9,7 @@ It exposes the raw API, as well as a higher-level convenience layer.
 Installation
 ============
 
-Simply put [nanomsg-ffi.lua](https://github.com/neomantra/nanomsg-ffi.lua/blob/master/nanomsg-ffi.lua)
+Simply put [nanomsg-ffi.lua](https://github.com/neomantra/luajit-nanomsg/blob/master/nanomsg-ffi.lua)
 somewhere on your LUA_PATH and make sure that the [nanomsg](https://github.com/250bpm/nanomsg)
 shared library is available on your LD_LIBRARY_PATH.
 
@@ -49,8 +49,8 @@ assert( rc > 0, nn.strerror(err) )
 Other nanomsg Lua Bindings 
 ==========================
 
- * https://github.com/Neopallium/lua-nanomsg
- * https://github.com/catwell/luajit-nanomsg
+If you are looking for a nanomsg binding that can work with plain Lua,
+as well as LuaJIT, check out [lua-nanomsg](https://github.com/Neopallium/lua-nanomsg).
 
 
 Roadmap
@@ -60,6 +60,7 @@ This is usable now.   The future holds:
 
  * more documentation
  * more examples and performance tests
+ * rockspec
  * more hand-holding classes for nanomsg concepts
  * bind nn_sendmsg and nn_recvmsg and associated control structures
 

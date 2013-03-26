@@ -184,6 +184,11 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
             if rc == 0 then return rc else return nil, libnn.nn_errno() end
         end,
 
+        close = function( s )
+            local rc = libnn.nn_close( s.fd )
+            if rc == 0 then return rc else return nil, libnn.nn_errno() end
+        end,
+
         send = function( s, buf, len, flags )
             flags = flags or 0
             local sz = libnn.nn_send( s.fd, buf, len, flags )

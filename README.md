@@ -45,6 +45,13 @@ assert( rc > 0, nn.strerror(err) )
 
 ```
 
+Running the test suite
+======================
+
+Test require [cwtest](https://github.com/catwell/cwtest). Either install it on your
+system or just put [cwtest.lua](https://github.com/catwell/cwtest/blob/master/cwtest.lua)
+somewhere on your LUA_PATH, then run `make test`.
+
 
 Other nanomsg Lua Bindings 
 ==========================

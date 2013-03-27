@@ -139,11 +139,8 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
 
     -- destructor
     __gc = function( s )
-        -- we cannot do this yet because we have no way to know
-        -- if the library closed us already.
-        -- this can happen when __gc is called during LuaJIT termintion
-        -- or there is some other bug going on....
-        --return libnn.nn_close( s.fd )
+        -- make sure the socket is closed
+        if s.fd >= 0 then libnn.nn_close( s.fd ) end
     end,
 
     -- methods

@@ -67,7 +67,6 @@ This is usable now.   The future holds:
 
  * more documentation
  * more examples and performance tests
- * rockspec
  * more hand-holding classes for nanomsg concepts
  * bind nn_sendmsg and nn_recvmsg and associated control structures
 

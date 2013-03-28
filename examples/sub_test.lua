@@ -14,7 +14,7 @@ assert( sub, nn.strerror(err) )
 local sid, err = sub:connect( ADDRESS )
 assert( sid >= 0, nn.strerror(err) )
 
-local rc, err = sub:setsockopt( nn.SUB, nn.SUBSCRIBE, arg[1] )
+local rc, err = sub:setsockopt( nn.SUB, nn.SUB_SUBSCRIBE, arg[1] )
 assert( rc >= 0, nn.strerror(err) )
 
 print(string.format('...subscriber started... on channel %s\n', arg[1]))

@@ -41,7 +41,6 @@ local int_t_sz = ffi.sizeof('int')
 
 ffi.cdef([[
 
-void nn_version (int *major, int *minor, int *patch);
 int nn_errno (void);
 const char *nn_strerror (int errnum);
 const char* nn_symbol (int i, int *value);

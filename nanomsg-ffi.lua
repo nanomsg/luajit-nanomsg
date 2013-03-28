@@ -51,7 +51,7 @@ int nn_freemsg (void *msg);
 
 int nn_socket (int domain, int protocol);
 int nn_close (int s);
-int nn_setsockopt (int s, int level, int option, const void *optval, size_t optvallen); 
+int nn_setsockopt (int s, int level, int option, const void *optval, size_t optvallen);
 int nn_getsockopt (int s, int level, int option, void *optval, size_t *optvallen);
 int nn_bind (int s, const char *addr);
 int nn_connect (int s, const char *addr);
@@ -227,7 +227,7 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
                 if err ~= nn.EAGAIN then return nil, err end
                 return -1
             end
-        end,           
+        end,
 
         -- Calls nn_recv on the socket using zero-copy
         -- Returns a nn.msg to access the data
@@ -238,7 +238,7 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
             local sz = libnn.nn_recv( s.fd, ptr, nn.MSG, flags )
             if sz < 0 then return nil, libnn.nn_errno() end
             return nn.msg( ptr[0], sz )
-        end,           
+        end,
     }
 })
 

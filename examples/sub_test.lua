@@ -8,7 +8,7 @@ if #arg ~= 1 then
     os.exit(-1)
 end
 
-local sub, err = nn.socket( nn.AF_SP, nn.SUB )
+local sub, err = nn.socket( nn.SUB )
 assert( sub, nn.strerror(err) )
 
 local sid, err = sub:connect( ADDRESS )

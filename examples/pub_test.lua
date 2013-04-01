@@ -12,7 +12,7 @@ end
 
 local channels = { arg[1], arg[2] }
 
-local pub, err = nn.socket( nn.AF_SP, nn.PUB )
+local pub, err = nn.socket( nn.PUB )
 assert( pub, nn.strerror(err) )
 
 local pid, err = pub:bind( ADDRESS )

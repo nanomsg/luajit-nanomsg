@@ -3,7 +3,7 @@ local nn = require 'nanomsg-ffi'
 
 local ADDRESS = "tcp://127.0.0.1:5556"
 
-local rep = nn.socket( nn.AF_SP, nn.REP )
+local rep = nn.socket( nn.REP )
 
 print("...starting server loop...")
 local echo

@@ -19,7 +19,7 @@ end
 
 print( '...client started...' )
 
-local req, err = nn.socket( nn.AF_SP, nn.REQ )
+local req, err = nn.socket( nn.REQ )
 assert( req, nn.strerror(err) )
 
 local eid, err = req:connect( ADDRESS )

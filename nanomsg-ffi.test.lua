@@ -19,10 +19,10 @@ T:start("REQ/REP re-sending of request"); do
   -- from tests/reqrep.c
   local ADDRESS = "inproc://a"
   local rep, req, err
-  rep, err = nn.socket(nn.AF_SP, nn.REP)
+  rep, err = nn.socket(nn.REP)
   T:yes( rep )
   T:posint( rep:bind(ADDRESS) )
-  req, err = nn.socket(nn.AF_SP, nn.REQ)
+  req, err = nn.socket(nn.REQ)
   T:yes( req )
   T:posint( req:connect(ADDRESS) )
   local resend_ivl = ffi.new("int[1]", 100)
@@ -41,7 +41,7 @@ end; T:done()
 T:start("TCP close socket while not connected"); do
   -- from tests/tcp.c
   local ADDRESS = "tcp://127.0.0.1:5555"
-  local sc, err = nn.socket(nn.AF_SP, nn.PAIR)
+  local sc, err = nn.socket(nn.PAIR)
   T:yes( sc )
   T:posint( sc:connect(ADDRESS) )
   T:eq( sc:close(sc), 0 )
@@ -51,10 +51,10 @@ T:start("TCP PAIR ping-pong"); do
   -- from tests/tcp.c
   local ADDRESS = "tcp://127.0.0.1:5555"
   local sc, sb, err
-  sc, err = nn.socket(nn.AF_SP, nn.PAIR)
+  sc, err = nn.socket(nn.PAIR)
   T:yes( sc )
   T:posint( sc:connect(ADDRESS) )
-  sb, err = nn.socket(nn.AF_SP, nn.PAIR)
+  sb, err = nn.socket(nn.PAIR)
   T:yes( sb )
   T:posint( sb:bind(ADDRESS) )
   local buf = ffi.new("char[32]")
@@ -72,10 +72,10 @@ T:start("TCP PAIR batch transfer"); do
   -- from tests/tcp.c
   local ADDRESS = "tcp://127.0.0.1:5555"
   local sc, sb, err
-  sc, err = nn.socket(nn.AF_SP, nn.PAIR)
+  sc, err = nn.socket(nn.PAIR)
   T:yes( sc )
   T:posint( sc:connect(ADDRESS) )
-  sb, err = nn.socket(nn.AF_SP, nn.PAIR)
+  sb, err = nn.socket(nn.PAIR)
   T:yes( sb )
   T:posint( sb:bind(ADDRESS) )
   local buf = ffi.new("char[32]")
@@ -92,10 +92,10 @@ T:start("TCP REQ/REP socket reuse"); do
   local req_buf, rep_buf = ffi.new("char[32]"), ffi.new("char[32]")
   local req, rep, err
   for i=1,10 do
-    rep, err = nn.socket(nn.AF_SP, nn.REP)
+    rep, err = nn.socket(nn.REP)
     T:yes( rep )
     T:posint( rep:bind(ADDRESS) )
-    req, err = nn.socket(nn.AF_SP, nn.REQ)
+    req, err = nn.socket(nn.REQ)
     T:yes( req )
     T:posint( req:connect(ADDRESS) )
     T:eq( req:send("REQ", 3, 0), 3 )

@@ -63,7 +63,7 @@ int nn_device (int s1, int s2);
 
 
 // nn_socket_t doesn't exist in nanomsg; it is a metatype anchor for nn.socket
-struct nn_socket_t { int fd; };
+struct nn_socket_t { int fd;  bool close_on_gc; };
 
 // nn_msg_t doesn't exist in nanomsg; it is a metatype anchor for nn.msg
 struct nn_msg_t { void *ptr; size_t size; };
@@ -129,17 +129,41 @@ end
 --- nanomsg socket class
 nn.socket = ffi.metatype( 'struct nn_socket_t', {
 
-    -- constructor
-    __new = function( socket_ct, domain, protocol )
+    --- Construct a new nanomsg socket
+    --
+    -- nn.socket( protocol, options )
+    -- @tparam number protocol The nanomsg protocol 
+    -- @tparam table options An options table
+    -- @return a socket object or nil on error
+    -- @return error code if the first argument is nil
+    --
+    -- The following options are available:
+    --    close_on_gc     invoke nn_close when the socket is gc'd (default is true)
+    --    domain          either nn.AF_SP or nn.AF_SP_RAW (default is nn.SP)
+    -- 
+    __new = function( socket_ct, protocol, options )
+        if not protocol then return nil, nn.EINVAL end
+        local close_on_gc, domain
+        if not options then
+            close_on_gc = true
+            domain = nn.AF_SP
+        else
+            if type(options) ~= 'table' then return nil, nn.EINVAL end
+            close_on_gc = (options.close_on_gc or options.close_on_gc == nil) and true or false
+            domain = options.domain or nn.AF_SP
+        end
+
         local fd = libnn.nn_socket( domain, protocol )
         if fd < 0 then return nil, libnn.nn_errno() end
-        return ffi.new( socket_ct, fd )
+        return ffi.new( socket_ct, fd, close_on_gc )
     end,
 
-    -- destructor
+    -- garbage collection destructor, not invoked by user
     __gc = function( s )
         -- make sure the socket is closed
-        if s.fd >= 0 then libnn.nn_close( s.fd ) end
+        if s.close_on_gc and s.fd >= 0 then
+            libnn.nn_close( s.fd )
+        end
     end,
 
     -- methods

@@ -34,9 +34,10 @@ TODO: nicer interfaces (especially for sockopts, a la ljsyscall?)
 local ffi = require 'ffi'
 local libnn = ffi.load('nanomsg')
 
-local ptr_holder_t = ffi.typeof('char *[1]')
-local int_holder_t = ffi.typeof('int[1]')
-local int_t_sz = ffi.sizeof('int')
+local int_sz      = ffi.sizeof('int')
+local int_1_t     = ffi.typeof('int[1]')
+local size_1_t    = ffi.typeof("size_t[1]")
+local charptr_1_t = ffi.typeof('char *[1]')
 
 
 ffi.cdef([[
@@ -171,11 +172,12 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
 
         setsockopt = function( s, level, opt, optval, optvallen )
             if not optvallen and type(optval) == 'boolean' then
-                if optval then optval = 1 else optval = 0 end
+                optval    = int_1_t(optval and 1 or 0)
+                optvallen = int_sz
             end
             if not optvallen and type(optval) == 'number' then
-                optval = int_holder_t(optval)
-                optvallen = int_t_sz
+                optval    = int_1_t(optval)
+                optvallen = int_sz
             end
             if not optvallen and type(optval) == 'string' then
                 optvallen = #optval
@@ -184,9 +186,11 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
             if rc == 0 then return rc else return nil, libnn.nn_errno() end
         end,
 
-        getsockopt = function( s, level, option, optval, optvallen )
-            local rc = libnn.nn_getsockopt( s.fd, lvel, opt, optval, optvallen )
-            if rc == 0 then return rc else return nil, libnn.nn_errno() end
+        -- currently assumes that the returned value is a number
+        getsockopt = function( s, level, opt )
+            local optval, optvallen = int_1_t(), size_1_t(int_sz)
+            local rc = libnn.nn_getsockopt( s.fd, level, opt, optval, optvallen )
+            if rc == 0 then return optval[0] else return nil, libnn.nn_errno() end
         end,
 
         bind = function( s, addr )
@@ -258,7 +262,7 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
         -- If nn_recv fails, returns nil, nn_errorno()
         recv_zc = function( s, flags )
             flags = flags or 0
-            local ptr = ptr_holder_t()
+            local ptr = charptr_1_t()
             local sz = libnn.nn_recv( s.fd, ptr, nn.MSG, flags )
             if sz < 0 then return nil, libnn.nn_errno() end
             return nn.msg( ptr[0], sz )

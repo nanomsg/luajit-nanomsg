@@ -39,44 +39,14 @@ local int_1_t     = ffi.typeof('int[1]')
 local size_1_t    = ffi.typeof("size_t[1]")
 local charptr_1_t = ffi.typeof('char *[1]')
 
-
-ffi.cdef([[
-
-int nn_errno (void);
-const char *nn_strerror (int errnum);
-const char* nn_symbol (int i, int *value);
-void nn_term (void);
-
-void *nn_allocmsg (size_t size, int type);
-int nn_freemsg (void *msg);
-
-int nn_socket (int domain, int protocol);
-int nn_close (int s);
-int nn_setsockopt (int s, int level, int option, const void *optval, size_t optvallen);
-int nn_getsockopt (int s, int level, int option, void *optval, size_t *optvallen);
-int nn_bind (int s, const char *addr);
-int nn_connect (int s, const char *addr);
-int nn_shutdown (int s, int how);
-int nn_send (int s, const void *buf, size_t len, int flags);
-int nn_recv (int s, void *buf, size_t len, int flags);
-
-int nn_device (int s1, int s2);
-
-
-// nn_socket_t doesn't exist in nanomsg; it is a metatype anchor for nn.socket
-struct nn_socket_t { int fd;  bool close_on_gc; };
-
-// nn_msg_t doesn't exist in nanomsg; it is a metatype anchor for nn.msg
-struct nn_msg_t { void *ptr; size_t size; };
-
-]])
-
-
 -- Public API
 local nn = {}
 
 
--- populate the nanomsg public symbols
+-- Bind nn_symbol to extract the nanomsg public symbols
+ffi.cdef([[
+const char* nn_symbol (int i, int *value);
+]])
 nn.E = {}
 do
     local symbol = ffi.new( 'struct { int value[1]; const char* name; }' )
@@ -98,6 +68,41 @@ do
         i = i + 1
     end
 end
+
+
+-- nanomsg ABI check
+-- we match the cdef's to the nanomsg library version
+if nn.VERSION == 0 then
+    ffi.cdef([[
+    int nn_errno (void);
+    const char *nn_strerror (int errnum);
+    void nn_term (void);
+
+    void *nn_allocmsg (size_t size, int type);
+    int nn_freemsg (void *msg);
+
+    int nn_socket (int domain, int protocol);
+    int nn_close (int s);
+    int nn_setsockopt (int s, int level, int option, const void *optval, size_t optvallen);
+    int nn_getsockopt (int s, int level, int option, void *optval, size_t *optvallen);
+    int nn_bind (int s, const char *addr);
+    int nn_connect (int s, const char *addr);
+    int nn_shutdown (int s, int how);
+    int nn_send (int s, const void *buf, size_t len, int flags);
+    int nn_recv (int s, void *buf, size_t len, int flags);
+
+    int nn_device (int s1, int s2);
+
+    // nn_socket_t doesn't exist in nanomsg; it is a metatype anchor for nn.socket
+    struct nn_socket_t { int fd; bool close_on_gc; };
+
+    // nn_msg_t doesn't exist in nanomsg; it is a metatype anchor for nn.msg
+    struct nn_msg_t { void *ptr; size_t size; };
+    ]])
+else
+    error( "unknown nanomsg version: " .. tostring(nn.VERSION) )
+end
+
 
 -- NN_MSG doesn't come through the symbol interface properly due to its use of size_t
 nn.MSG = ffi.typeof('size_t')( -1 )

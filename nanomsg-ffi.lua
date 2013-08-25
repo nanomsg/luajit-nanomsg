@@ -70,7 +70,7 @@ end
 
 -- nanomsg ABI check
 -- we match the cdef's to the nanomsg library version
-if nn.VERSION == 0 then
+if (nn.VERSION_CURRENT  - nn.VERSION_AGE) == 0 then
     ffi.cdef([[
     int nn_errno (void);
     const char *nn_strerror (int errnum);

@@ -64,11 +64,9 @@ do
         if name:match('^E([%w_]*)') then
             nn.E[ symbol.value[0] ] = name
         end
-
         i = i + 1
     end
 end
-
 
 -- nanomsg ABI check
 -- we match the cdef's to the nanomsg library version
@@ -138,7 +136,7 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
     --- Construct a new nanomsg socket
     --
     -- nn.socket( protocol, options )
-    -- @tparam number protocol The nanomsg protocol 
+    -- @tparam number protocol The nanomsg protocol
     -- @tparam table options An options table
     -- @return a socket object or nil on error
     -- @return error code if the first argument is nil
@@ -146,7 +144,7 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
     -- The following options are available:
     --    close_on_gc     invoke nn_close when the socket is gc'd (default is true)
     --    domain          either nn.AF_SP or nn.AF_SP_RAW (default is nn.AF_SP)
-    -- 
+    --
     __new = function( socket_ct, protocol, options )
         if not protocol then return nil, nn.EINVAL end
         local close_on_gc, domain

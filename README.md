@@ -18,7 +18,7 @@ Then, you can either:
 - clone this repository and run `make install`;
 - install the latest release with the [LuaRocks](http://luarocks.org/) package manager:
 
-    luarocks install "https://raw.github.com/nanomsg/luajit-nanomsg/master/rockspec/luajit-nanomsg-scm-1.rockspec"
+        luarocks install "https://raw.github.com/nanomsg/luajit-nanomsg/master/rockspec/luajit-nanomsg-scm-1.rockspec"
 
 Usage
 =====

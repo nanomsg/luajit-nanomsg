@@ -2,7 +2,7 @@ package = "luajit-nanomsg"
 version = "scm-1"
 
 source = {
-   url = "git://github.com/neomantra/luajit-nanomsg.git",
+   url = "git://github.com/nanomsg/luajit-nanomsg.git",
 }
 
 description = {
@@ -11,7 +11,7 @@ description = {
       luajit-nanomsg is a FFI-based binding
       for the nanomsg library
    ]],
-   homepage = "http://github.com/neomantra/luajit-nanomsg",
+   homepage = "http://github.com/nanomsg/luajit-nanomsg",
    license = "MIT/X11",
 }
 

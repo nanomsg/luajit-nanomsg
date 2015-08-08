@@ -249,9 +249,9 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
         -- Otherwise, returns nil, nn_errorno()
         send_zc = function( s, msg, flags )
             flags = flags or 0
-            local sz = libnn.nn_send( s.fd, msg.ptr, nn.MSG, flags )
+            local sz = libnn.nn_send( s.fd, msg.ptr, msg.size, flags )
             if sz >= 0 then
-                msg.ptr = nil
+                msg:free()
                 return sz
             else
                 local err = libnn.nn_errno()
@@ -303,6 +303,7 @@ nn.msg = ffi.metatype( 'struct nn_msg_t', {
             if m.ptr ~= nil then
                 libnn.nn_freemsg( m.ptr )
                 m.ptr = nil
+                m.size = 0
             end
         end,
 

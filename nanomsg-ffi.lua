@@ -38,6 +38,7 @@ local int_sz      = ffi.sizeof('int')
 local int_1_t     = ffi.typeof('int[1]')
 local size_1_t    = ffi.typeof("size_t[1]")
 local charptr_1_t = ffi.typeof('char *[1]')
+local voidptr_1_t = ffi.typeof('void*[1]')
 
 -- Public API
 local nn = {}
@@ -249,7 +250,8 @@ nn.socket = ffi.metatype( 'struct nn_socket_t', {
         -- Otherwise, returns nil, nn_errorno()
         send_zc = function( s, msg, flags )
             flags = flags or 0
-            local sz = libnn.nn_send( s.fd, msg.ptr, nn.MSG, flags )
+            local msg_ptr_addr = voidptr_1_t(msg.ptr)
+            local sz = libnn.nn_send( s.fd, msg_ptr_addr, nn.MSG, flags )
             if sz >= 0 then
                 msg.ptr = nil
                 return sz

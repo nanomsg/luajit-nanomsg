@@ -293,8 +293,14 @@ nn.msg = ffi.metatype( 'struct nn_msg_t', {
         end
     end,
 
+    -- operator #
     __len = function( m )
         return m.size
+    end,
+
+    -- tostring(m)
+    __tostring = function( m )
+        return ffi.string( m.ptr, m.size )
     end,
 
     -- methods
